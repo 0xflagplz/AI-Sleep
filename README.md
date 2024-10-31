@@ -29,10 +29,6 @@ The `process.py` script is responsible for loading, preprocessing, and training 
 - **Evaluation**: Evaluates the model's accuracy and prints a classification report.
 - **Model Saving**: Saves the trained model to a file (`trained_model.joblib`).
 
-Usage:
-```bash
-python scripts/process.py path/to/your_data.csv
-```
 
 ### 3. Prediction Model (`bof/prediction.py`)
 
