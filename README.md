@@ -6,9 +6,9 @@ This is a VERY VERY basic implementation of taking a data set to train a model t
 
 ## Components
 
-### 1. Data Generation (`generate.py`)
+### 1. Data Generation (`data-creation/generate.py`)
 
-The `data-creation/generate.py` script is responsible for generating synthetic data that simulates different operating system versions, EDR types, and network conditions. This data is used to train and test the AI model.
+The `generate.py` script is responsible for generating synthetic data that simulates different operating system versions, EDR types, and network conditions. This data is used to train and test the AI model.
 
 - **OS Versions**: Windows 10, Windows 11
 - **EDR Types**: Includes popular EDR solutions like Crowdstrike Falcon, SentinelOne, and others.
