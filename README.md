@@ -1,4 +1,4 @@
-# AI-Driven Beacon Sleep Setter
+# AI-Driven Beacon Sleep
 
 ## Overview
 
