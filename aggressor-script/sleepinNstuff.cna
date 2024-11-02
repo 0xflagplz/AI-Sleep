@@ -18,11 +18,11 @@ sub generateSleep {
 }
 
 sub aiSleep {
-    $dialog = dialog("AISleep", %(bid => "Session: ", payload_type => "Payload Type: ", EDR => "Crowdstrike", OS => "10", TYPE => "HTTPS"), &generateSleep);
+    $dialog = dialog("AISleep", %(bid => "Session: ", payload_type => "Payload Type: ", EDR => "", OS => "", TYPE => ""), &generateSleep);
     drow_beacon($dialog, "bid", "Session: ");
-    drow_text($dialog, "OS", "OS : ");
-    drow_text($dialog, "EDR", "EDR : ");
-    drow_text($dialog, "TYPE", "Beacon Type : ");
+    drow_combobox($dialog, "OS", "Operating System: ", @("Win10", "Win11"));
+    drow_combobox($dialog, "EDR", "EDR Product: ", @("Defender", "Sentinelone", "MDE", "Crowdstrike", "Fireeye", "Mcafee", "Paloalto", "Zscaler", "Splunk", "Symantec", "Trendmicro", "Sophos", "Checkpoint", "TrendmicroDP", "Fortinet", "Cisco", "ESET", "Kaspersky", "Bitdefender"));
+    drow_combobox($dialog, "TYPE", "Beacon Type : ", @("HTTP", "HTTPS", "DNS", "SMB"));
     dbutton_action($dialog, "Generate");
     dialog_show($dialog);
 }

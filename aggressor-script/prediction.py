@@ -72,8 +72,8 @@ def predict_outcome(input_data):
 if __name__ == "__main__":
     # Define a mapping for OS versions
     os_version_mapping = {
-        '10': 'Windows 10',
-        '11': 'Windows 11',
+        'Win10': 'Windows 10',
+        'Win11': 'Windows 11',
     }
 
     # Define a mapping for EDR types
@@ -119,9 +119,9 @@ if __name__ == "__main__":
     os_version = os_version_mapping.get(os_version_input, os_version_input)
 
     # Adjust build number based on OS version
-    if os_version_input == '10':
+    if os_version_input == 'Win10':
         build_number = '19044'
-    elif os_version_input == '11':
+    elif os_version_input == 'Win11':
         build_number = '22621'
     else:
         build_number = 'Unknown'  # Default or error handling
