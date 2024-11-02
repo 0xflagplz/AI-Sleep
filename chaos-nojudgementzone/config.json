@@ -1,0 +1,20 @@
+{
+    "language": "C",
+    "output_format": "EXE",
+    "functionality": "sandbox_evasion, anti_debugging, network_communication",
+    "input_type": "shellcode",
+    "output_type": "executable",
+    "unhooking_method": "patch_jmp",
+    "allocation_method": "virtualalloc",
+    "execution_method": "createremotethread",
+    "sleep_mask": "dynamic",
+    "pause_mechanic": "thread_sleep",
+    "sandbox_checks": "behavioral",
+    "sandbox_evasion": "process_hollowing",
+    "persistence": "scheduled_tasks",
+    "anti_debugging": true,
+    "anti_virtualization": true,
+    "network_communication": true,
+    "obfuscation": true,
+    "stealth": true
+}
