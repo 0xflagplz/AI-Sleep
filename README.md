@@ -30,18 +30,18 @@ The `process.py` script is responsible for loading, preprocessing, and training 
 - **Evaluation**: Evaluates the model's accuracy and prints a classification report.
 - **Model Saving**: Saves the trained model to a file (`trained_model.joblib`).
 
-### 3. Prediction Model (`bof/prediction.py`)
+### 3. Prediction Model (`aggressor-script/prediction.py`)
 
 The `prediction.py` script loads a pre-trained model to predict the detection outcome based on input parameters. It preprocesses the input data, encodes categorical variables, and uses the model to make predictions.
 
 - **Preprocessing**: Encodes OS version, EDR type, network load, beacon type, and considers the time of day.
 - **Prediction**: Outputs whether the sleep setting is "Detected" or "Undetected".
 
-### 4. BOF Integration (`bof/sleepinNstuff.cna`)
+### 4. aggressor-script Integration (`aggressor-script/sleepinNstuff.cna`)
 
-The BOF scripts (`bof/sleepinNstuff.cna`) integrate the AI model into a security tool, allowing it to execute AI-generated sleep settings.
+The aggressor-script scripts (`aggressor-script/sleepinNstuff.cna`) integrate the AI model into a security tool, allowing it to execute AI-generated sleep settings.
 
-- **`bof/sleepinNstuff.cna`**: Executes the Python script to generate sleep and jitter settings that will return "Undetected", which are then applied to a beacon session.
+- **`aggressor-script/sleepinNstuff.cna`**: Executes the Python script to generate sleep and jitter settings that will return "Undetected", which are then applied to a beacon session.
 
 ## Usage
 
@@ -57,10 +57,10 @@ The BOF scripts (`bof/sleepinNstuff.cna`) integrate the AI model into a security
 
 3. **Model Prediction**: Use `prediction.py` to predict detection outcomes based on input parameters.
    ```bash
-   python bof/prediction.py <OS Version> <EDR Type> <Beacon Type>
+   python aggressor-script/prediction.py <OS Version> <EDR Type> <Beacon Type>
    ```
 
-4. **BOF Execution**: Use the BOF scripts to integrate the AI model into your security tool and apply the generated sleep settings.
+4. **Aggressor Execution**: Use the aggressor-script scripts to integrate the AI model into your CS and apply the generated sleep settings.
 
 ## Disclaimer
 
